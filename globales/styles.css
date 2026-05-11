@@ -1,0 +1,302 @@
+/* ==========================================================================
+   VARIABLES GLOBALES Y CONFIGURACIÓN
+   ========================================================================== */
+:root {
+    --ancho-sidebar-expandido: 22vw; 
+    --ancho-sidebar-colapsado: 7vw;
+
+    --espacio-azul: clamp(34px, 3.64vw, 40px);
+    --espacio-rosa: clamp(20px, 2.6vw, 36px);
+    --espacio-amarillo: clamp(20px, 1.82vw, 35px);
+    --espacio-verde: clamp(16px, 1.3vw, 25px);
+
+    --color-fondo: #383838; 
+    --color-sidebar: #383838; 
+    --color-blanco: #ffffff;
+    --color-acento: #ffcc00; 
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Work Sans', sans-serif;
+    background-color: var(--color-fondo);
+    display: flex;
+    height: 100vh;
+    overflow: hidden; 
+    min-width: 1100px; 
+}
+
+/* ==========================================================================
+   MENÚ LATERAL (SIDEBAR)
+   ========================================================================== */
+.sidebar {
+    width: var(--ancho-sidebar-expandido); 
+    background-color: var(--color-sidebar);
+    height: 100vh;
+    transition: width 0.4s ease; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    /* Alineación rígida a la izquierda */
+    align-items: flex-start; 
+
+    /* Padding intacto: Superior/Inferior Azul, Laterales Rosa */
+    padding: var(--espacio-azul) var(--espacio-rosa);
+}
+
+.sidebar.collapsed {
+    width: var(--ancho-sidebar-colapsado);
+}
+
+/* Contenedor de los botones */
+.toggle-btn {
+    display: flex; 
+    align-items: center;
+    /* Eliminamos la caja de 55px y el centrado, ahora solo envuelve al elemento */
+    text-decoration: none;
+    cursor: pointer;
+    color: var(--color-acento);
+    transition: color 0.4s ease; /* Solo animamos el color por si acaso, nada de tamaños */
+}
+
+/* ==========================================================================
+   TAMAÑOS ESTRICTOS: LOGO E ÍCONO A 1.3REM
+   ========================================================================== */
+.logo-img {
+    width: 1.8rem; 
+    height: 1.8rem; /* Para asegurar la proporción cuadrada respecto a la fuente */
+    object-fit: contain; /* Evita que la imagen se deforme si no es un cuadrado perfecto */
+    display: block;
+    /* Cero animaciones de tamaño */
+}
+
+.btn-bottom i {
+    font-size: 1.3rem; 
+    /* Cero animaciones de tamaño */
+}
+
+/* ==========================================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================================== */
+.main-content {
+    flex: 1; 
+    height: 100vh;
+    display: flex;
+    transition: padding 0.4s ease;
+    padding: var(--espacio-amarillo) var(--espacio-amarillo) var(--espacio-amarillo) 0;
+}
+
+.content-box {
+    background-color: var(--color-blanco);
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    overflow-y: auto; 
+    padding: var(--espacio-verde);
+}
+
+/* ==========================================================================
+   ESTILOS LECCIÓN 1: SHORTS, MODAL Y PLAYGROUND
+   ========================================================================== */
+
+/* --- SIDEBAR TEXTOS Y ESTRUCTURA --- */
+.sidebar-content {
+    flex: 1;
+    margin-top: 20px;
+    width: 100%;
+    overflow-y: auto;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* Ocultar textos si el menú se colapsa */
+.sidebar.collapsed .sidebar-content {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-title {
+    color: var(--color-acento);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.sidebar-subtitle {
+    color: var(--color-blanco);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.sidebar-list {
+color: var(--color-fondo);
+  font-size: 1.6rem;
+  margin-left: 20px;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+/* --- ÁREA PRINCIPAL --- */
+.etapa-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-title {
+    color: var(--color-fondo);
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* --- EL INPUT --- */
+.input-wrapper {
+display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.svg-shorts-icon {
+    width: 24px;
+    height: 24px;
+    margin: 0 15px;
+    /* TÉCNICA MASK: Pinta el SVG del color que le digamos */
+    background-color: #999999; /* GRIS POR DEFECTO */
+    -webkit-mask-image: url('shorts.svg');
+    mask-image: url('shorts.svg');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    transition: background-color 0.3s ease;
+}
+
+/* JS le agregará esta clase cuando la URL sea correcta */
+.svg-shorts-icon.valid {
+    background-color: #ff0033; /* ROJO YOUTUBE */
+}
+
+.input-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #333;
+}
+
+.btn-primary {
+    background-color: #0056b3; /* Azul fuerte */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #004494;
+}
+
+/* --- POPUP MODAL --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px); /* Efecto cristal oscuro atrás */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.modal-content h2 { color: #333; margin-bottom: 10px; }
+.modal-content p { color: #555; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.5; }
+.btn-modal { width: 100%; margin-top: 15px; }
+
+/* --- BLOQUES DE CÓDIGO (Estilo ChatGPT / Resaltado) --- */
+.code-block {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7rem;
+    text-align: left;
+    overflow-x: auto;
+    border: 1px solid #333;
+    white-space: pre-wrap; /* Para que baje de línea si es largo */
+}
+
+.code-block .tag { color: #569cd6; } /* Azul para etiquetas HTML */
+.code-block .attr { color: #9cdcfe; } /* Celeste para atributos */
+.code-block .val { color: #ce9178; } /* Naranja para valores */
+.code-block .css-prop { color: #9cdcfe; } 
+.code-block .css-val { color: #ce9178; }
+
+/* --- PLAYGROUND (Controles) --- */
+.control-group { margin-bottom: 20px; }
+.control-label { color: var(--color-acento); font-size: 0.85rem; margin-bottom: 8px; font-weight: 600;}
+
+.btn-row { display: flex; gap: 5px; }
+.grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-width: 150px;}
+
+.control-btn {
+    background: #555;
+    color: white;
+    border: 1px solid #666;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    flex: 1;
+    transition: all 0.2s;
+}
+
+.control-btn:hover { background: #666; }
+.control-btn.active-btn { background: var(--color-acento); color: #333; font-weight: bold; border-color: var(--color-acento); }
+
+.video-wrapper {
+    width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    transition: all 0.4s ease;
+}
+
+.video-wrapper iframe {
+    transition: border-radius 0.4s ease, transform 0.4s ease;
+}
+
+.live-code-box { margin-top: 20px; }
+.live-code-text { color: #fff; font-size: 0.8rem; margin-bottom: 5px; }
