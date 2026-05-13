@@ -7,13 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnLogo = document.getElementById('btn-logo');
     const btnFlecha = document.getElementById('btn-flecha');
 
-    // Solo se ejecuta si los botones existen en el HTML
     if (sidebar && btnLogo && btnFlecha) {
         const toggleSidebar = (e) => {
             e.preventDefault(); 
             sidebar.classList.toggle('collapsed');
             
-            // Alternar ícono de salida
             const iconoFlecha = btnFlecha.querySelector('i');
             if(sidebar.classList.contains('collapsed')) {
                 iconoFlecha.classList.replace('fa-right-to-bracket', 'fa-door-open'); 
@@ -27,75 +25,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 2. LÓGICA DE LA CUADRÍCULA DE LECCIONES (Solo para la página principal)
+    // 2. LÓGICA DE LA CUADRÍCULA (Renderizado ultrarrápido sin Fetch)
     // ==========================================================================
     const gridLecciones = document.getElementById('grid-lecciones');
 
-    // Solo se ejecuta si existe el contenedor de la cuadrícula
     if (gridLecciones) {
-        const totalLecciones = 11;
         
-        // ARRAY DE TEXTOS DINÁMICOS
-        const descripcionesLecciones = [
-            "Introducción a la estructura base de HTML y preparación del entorno.",
-            "Estilos CSS | Padding Margin y Border",
-            "Próximamente",
-            "Próximamente",
-            "Próximamente",
-            "Próximamente",
-            "Próximamente",
-            "Próximamente",
-            "Próximamente",
-            "Próximamente",
-            "Próximamente"
+        // ARRAY DE CONFIGURACIÓN: Control total sobre qué botón se enciende
+        // Simplemente cambia 'activa: false' a 'activa: true' cuando subas una nueva lección
+        const leccionesConfig = [
+            { id: 1, desc: "Introducción a la estructura base de HTML y preparación del entorno.", activa: true },
+            { id: 2, desc: "Estilos CSS | Padding Margin y Border", activa: true },
+            { id: 3, desc: "Próximamente", activa: false },
+            { id: 4, desc: "Próximamente", activa: false },
+            { id: 5, desc: "Próximamente", activa: false },
+            { id: 6, desc: "Próximamente", activa: false },
+            { id: 7, desc: "Próximamente", activa: false },
+            { id: 8, desc: "Próximamente", activa: false },
+            { id: 9, desc: "Próximamente", activa: false },
+            { id: 10, desc: "Próximamente", activa: false },
+            { id: 11, desc: "Próximamente", activa: false }
         ];
 
-        async function verificarArchivo(url) {
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                return response.ok; 
-            } catch (error) {
-                console.error(`Error verificando ${url}:`, error);
-                return false;
-            }
-        }
+        // Configuración independiente para el examen
+        const examenConfig = { desc: "Próximamente", activa: false };
 
-        async function renderizarGrid() {
-            // Generar Lecciones 1 al 11
-            for (let i = 1; i <= totalLecciones; i++) {
-                const url = `lecciones/leccion${i}.html`;
-                const existe = await verificarArchivo(url);
-                
-                const claseBoton = existe ? 'btn-primary' : 'btn-inactive';
-                const enlace = existe ? url : '#';
-                
-                // Obtenemos el texto de la lista (recordando que los arrays empiezan en 0)
-                const textoDinamico = descripcionesLecciones[i - 1];
+        function renderizarGrid() {
+            // 1. Construir las lecciones normales
+            leccionesConfig.forEach(leccion => {
+                const claseBoton = leccion.activa ? 'btn-primary' : 'btn-inactive';
+                const enlace = leccion.activa ? `lecciones/leccion${leccion.id}.html` : '#';
 
                 const cardHTML = `
                     <div class="leccion-card">
                         <a href="${enlace}" class="btn-big ${claseBoton}">
-                            Lección ${i}
+                            Lección ${leccion.id}
                         </a>
-                        <p class="leccion-desc">${textoDinamico}</p>
+                        <p class="leccion-desc">${leccion.desc}</p>
                     </div>
                 `;
                 gridLecciones.insertAdjacentHTML('beforeend', cardHTML);
-            }
+            });
 
-            // Generar Examen
-            const urlExamen = 'examen/index.html'; 
-            const examenExiste = await verificarArchivo(urlExamen);
-            
-            const claseExamen = examenExiste ? 'btn-danger' : 'btn-inactive';
-            const enlaceExamen = examenExiste ? urlExamen : '#';
+            // 2. Construir el botón de Examen
+            const claseExamen = examenConfig.activa ? 'btn-danger' : 'btn-inactive';
+            const enlaceExamen = examenConfig.activa ? 'examen/index.html' : '#';
 
             const cardExamenHTML = `
                 <div class="leccion-card">
                     <a href="${enlaceExamen}" class="btn-big ${claseExamen}">
                         Examen
                     </a>
-                    <p class="leccion-desc">Próximamente</p>
+                    <p class="leccion-desc">${examenConfig.desc}</p>
                 </div>
             `;
             gridLecciones.insertAdjacentHTML('beforeend', cardExamenHTML);
@@ -109,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     const inputUrl = document.getElementById('yt-url');
     
-    // Condición de seguridad: Solo se ejecuta si estamos en una página con el input de YouTube
     if (inputUrl) {
         const ytIcon = document.getElementById('yt-icon');
         const btnValidar = document.getElementById('btn-validar');
@@ -177,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(id).style.display = 'none';
         };
 
-        // Verificamos el botón de finalizar por si acaso
         const btnFinalizar = document.getElementById('btn-finalizar');
         if (btnFinalizar) {
             btnFinalizar.addEventListener('click', () => {
