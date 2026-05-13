@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Base - Lección Display</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Hoja de estilos global -->
+    <link rel="stylesheet" href="../globales/styles.css">
+
+    <style>
+        /* CSS ESPECÍFICO DE LA LECCIÓN */
+        #workspace-leccion {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+            /* Se evita Flex/Grid intencionalmente para la lección */
+            display: block; 
+        }
+
+        .elemento-dinamico {
+            background-color: #cccccc;
+            color: #000000;
+            height: 80px;
+            /* Margen de 5px perimetral = 10px de separación real entre hermanos */
+            margin: 5px; 
+            box-sizing: border-box;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            /* Centrado interno básico del texto */
+            display: block; 
+            text-align: center;
+            line-height: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.3s ease;
+        }
+
+        /* Cuando se aplique inline-block desde JS, sobreescribirá el display base */
+    </style>
+</head>
+<body>
+    <aside id="sidebar" class="sidebar">
+        <!-- LOGO SUPERIOR -->
+        <a href="#" class="toggle-btn" id="btn-logo" aria-label="Alternar menú">
+            <img src="../globales/logo.png" alt="Logo" class="logo-img">
+        </a>
+
+        <!-- CONTENIDO DEL SIDEBAR -->
+        <div class="sidebar-content">
+            
+            <div id="seccion-instrucciones">
+                <h2 class="sidebar-title">Instrucciones</h2>
+                <p class="sidebar-subtitle">
+                    Agrega elementos, y observa cómo fluyen los elementos en la pantalla al cambiar su propiedad display.
+                </p>
+            </div>
+
+            <div id="seccion-controles">
+                <!-- Acordeón 1: Agregar elementos -->
+                <details open class="control-group">
+                    <summary class="control-label">Agregar elementos (<span id="contador-elementos">0</span>/15)</summary>
+                    <div class="btn-row">
+                        <button class="control-btn" id="btn-agregar" onclick="agregarElemento()">Agregar</button>
+                        <button class="control-btn" id="btn-quitar" onclick="quitarElemento()">Quitar</button>
+                    </div>
+                </details>
+
+                <!-- Acordeón 2: Tipo de elementos -->
+                <details open class="control-group">
+                    <summary class="control-label">Tipo de elementos</summary>
+                    <div class="btn-row">
+                        <!-- El botón "Tipo bloque" arranca activo por defecto -->
+                        <button class="control-btn active-btn" id="btn-block" onclick="cambiarDisplay('block')">Tipo bloque</button>
+                        <button class="control-btn" id="btn-inline" onclick="cambiarDisplay('inline-block')">Tipo en línea</button>
+                    </div>
+                    <div class="live-code-box">
+                        <div class="code-block">
+<span class="css-prop">display</span>: <span class="css-val" id="codigo-display">block</span>;
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Botón de Finalizar -->
+                <button class="btn-primary" id="btn-finalizar" style="width: 100%; margin-top: 20px;" onclick="finalizarLeccion()">Finalizar Lección</button>
+            </div>
+        </div>
+
+        <!-- ÍCONO INFERIOR -->
+        <a href="#" class="toggle-btn btn-bottom" id="btn-flecha" aria-label="Alternar menú">
+            <i class="fa-solid fa-right-to-bracket"></i>
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-box">
+            <!-- Área de Trabajo Principal Vacía -->
+            <div id="workspace-leccion">
+                <!-- Los divs generados dinámicamente aparecerán aquí -->
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL FINAL -->
+    <div class="modal-overlay" id="modal-final" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2>¡Lección Completada!</h2>
+            <p id="texto-resumen">Generaste X elementos organizados como tipo Y.</p>
+            <div class="code-block" style="margin-bottom: 20px; text-align: left;">
+<span class="css-prop">display</span>: <span class="css-val" id="codigo-modal-final">block</span>;
+            </div>
+            <button class="btn-primary btn-modal" onclick="cerrarYRedirigir()">Volver al Inicio</button>
+        </div>
+    </div>
+
+    <!-- Scripts Globales -->
+    <script src="../globales/scripts.js"></script>
+
+    <!-- SCRIPT ESPECÍFICO DE LA LECCIÓN -->
+    <script>
+        // Variables de Estado
+        let conteoElementos = 0;
+        const MAX_ELEMENTOS = 15;
+        let tipoDisplayActual = 'block';
+
+        // Elementos del DOM
+        const workspace = document.getElementById('workspace-leccion');
+        const contadorTxt = document.getElementById('contador-elementos');
+        const codigoDisplay = document.getElementById('codigo-display');
+        
+        // Contenidos aleatorios requeridos
+        const contenidosPermitidos = [
+            'Imagen &lt;img&gt;',
+            'Video &lt;iframe&gt;',
+            'Texto &lt;p&gt;',
+            'Párrafo &lt;p&gt;',
+            'Titular &lt;h1&gt;',
+            'Subtítulo &lt;h3&gt;'
+        ];
+
+        // Función para obtener un número aleatorio en un rango
+        function obtenerAleatorio(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Agregar elemento al workspace
+        function agregarElemento() {
+            if (conteoElementos >= MAX_ELEMENTOS) return;
+
+            const div = document.createElement('div');
+            div.classList.add('elemento-dinamico');
+            
+            // Asignar ancho aleatorio entre 25% y 40%
+            // Se resta 10px en el calc() para compensar el margin: 5px perimetral y evitar scroll horizontal
+            const anchoAleatorio = obtenerAleatorio(25, 40);
+            div.style.width = `calc(${anchoAleatorio}% - 10px)`;
+            
+            // Asignar display actual
+            div.style.display = tipoDisplayActual;
+
+            // Asignar contenido aleatorio
+            const contenidoAleatorio = contenidosPermitidos[obtenerAleatorio(0, contenidosPermitidos.length - 1)];
+            div.innerHTML = contenidoAleatorio;
+
+            workspace.appendChild(div);
+            
+            conteoElementos++;
+            actualizarContador();
+        }
+
+        // Quitar el último elemento del workspace
+        function quitarElemento() {
+            if (conteoElementos <= 0) return;
+            
+            workspace.removeChild(workspace.lastElementChild);
+            conteoElementos--;
+            actualizarContador();
+        }
+
+        // Actualizar UI del contador
+        function actualizarContador() {
+            contadorTxt.innerText = conteoElementos;
+        }
+
+        // Cambiar entre bloque y en línea
+        function cambiarDisplay(tipo) {
+            tipoDisplayActual = tipo;
+            
+            // Actualizar interfaz de botones
+            document.getElementById('btn-block').classList.remove('active-btn');
+            document.getElementById('btn-inline').classList.remove('active-btn');
+            
+            if (tipo === 'block') {
+                document.getElementById('btn-block').classList.add('active-btn');
+            } else {
+                document.getElementById('btn-inline').classList.add('active-btn');
+            }
+
+            // Actualizar fragmento de código dinámico
+            codigoDisplay.innerText = tipo;
+
+            // Aplicar el nuevo display a todos los divs existentes
+            const divs = document.querySelectorAll('.elemento-dinamico');
+            divs.forEach(div => {
+                div.style.display = tipo;
+            });
+        }
+
+        // Finalizar y mostrar Modal
+        function finalizarLeccion() {
+            const modal = document.getElementById('modal-final');
+            const textoResumen = document.getElementById('texto-resumen');
+            const codigoModal = document.getElementById('codigo-modal-final');
+
+            const nombreTipo = tipoDisplayActual === 'block' ? 'tipo bloque' : 'tipo en línea';
+            
+            textoResumen.innerText = `Generaste ${conteoElementos} elementos organizados como ${nombreTipo}.`;
+            codigoModal.innerText = tipoDisplayActual;
+
+            modal.style.display = 'flex';
+        }
+
+        // Acción al cerrar el modal
+        function cerrarYRedirigir() {
+            // Redirigir a index.html en la raíz
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html>

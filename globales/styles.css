@@ -300,3 +300,77 @@ display: flex;
 
 .live-code-box { margin-top: 20px; }
 .live-code-text { color: #fff; font-size: 0.8rem; margin-bottom: 5px; }
+
+/* ==========================================================================
+   CUADRÍCULA DE LECCIONES (GRID)
+   ========================================================================== */
+.grid-lecciones {
+    display: grid;
+    /* Grid responsivo: tarjetas de min 250px, máximo 1 fracción del espacio */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px 30px; /* Separación vertical y horizontal */
+    padding: 20px;
+    width: 100%;
+}
+
+.leccion-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Estilos base del botón gigante */
+.btn-big {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    transition: transform 0.2s ease, opacity 0.3s ease, box-shadow 0.2s ease;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+/* Colores y Estados */
+.btn-primary {
+    background-color: #1a73e8; /* Azul */
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #155db2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(26, 115, 232, 0.3);
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Rojo */
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+}
+
+.btn-inactive {
+    background-color: #e0e0e0; /* Gris */
+    color: #9e9e9e;
+    cursor: not-allowed;
+    pointer-events: none; /* Desactiva el clic */
+}
+
+/* Texto descriptivo debajo del botón */
+.leccion-desc {
+    font-size: 0.85rem;
+    color: #333333;
+    line-height: 1.4;
+    font-weight: 400;
+}

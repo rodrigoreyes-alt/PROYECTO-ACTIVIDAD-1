@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 2 - Box Model</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Estilos globales del sistema -->
+    <link rel="stylesheet" href="../globales/styles.css">
+</head>
+<body>
+    <aside id="sidebar" class="sidebar">
+        <a href="#" class="toggle-btn" id="btn-logo">
+            <img src="../globales/logo.png" alt="Logo" class="logo-img">
+        </a>
+        
+        <div class="sidebar-content">
+            <div id="seccion-instrucciones">
+                <h2 class="sidebar-title">Lección 2</h2>
+                <p class="sidebar-subtitle">El Modelo de Caja (Box Model)</p>
+            </div>
+
+            <!-- Acordeón: Padding -->
+            <details open class="control-group">
+                <summary class="control-label">Padding (Magenta)</summary>
+                <div class="btn-row">
+                    <button class="control-btn" onclick="updateValue('padding', 1)">Más</button>
+                    <button class="control-btn" onclick="updateValue('padding', -1)">Menos</button>
+                </div>
+                <div class="live-code-box">
+                    <div class="code-block">padding: <span class="css-val" id="code-padding">0px</span>;</div>
+                </div>
+            </details>
+
+            <!-- Acordeón: Border -->
+            <details open class="control-group">
+                <summary class="control-label">Border (Amarillo)</summary>
+                <div class="btn-row">
+                    <button class="control-btn" onclick="updateValue('border', 1)">Más</button>
+                    <button class="control-btn" onclick="updateValue('border', -1)">Menos</button>
+                </div>
+                <div class="live-code-box">
+                    <div class="code-block">border: <span class="css-val" id="code-border">0px</span> solid;</div>
+                </div>
+            </details>
+
+            <!-- Acordeón: Margin -->
+            <details open class="control-group">
+                <summary class="control-label">Margin (Cian)</summary>
+                <div class="btn-row">
+                    <button class="control-btn" onclick="updateValue('margin', 1)">Más</button>
+                    <button class="control-btn" onclick="updateValue('margin', -1)">Menos</button>
+                </div>
+                <div class="live-code-box">
+                    <div class="code-block">margin: <span class="css-val" id="code-margin">0px</span>;</div>
+                </div>
+            </details>
+
+            <!-- Botón Finalizar -->
+            <button class="btn-primary" id="btn-finalizar-leccion" style="width: 100%; margin-top: 20px;">
+                Finalizar lección
+            </button>
+        </div>
+
+        <a href="../index.html" class="toggle-btn btn-bottom" id="btn-flecha">
+            <i class="fa-solid fa-right-to-bracket"></i>
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-box">
+            <div class="canvas-container">
+                <!-- Representación visual del Box Model -->
+                <div id="visual-margin" class="box-layer margin-layer">
+                    <div id="visual-border" class="box-layer border-layer">
+                        <div id="visual-padding" class="box-layer padding-layer">
+                            <div id="main-element">
+                                <span id="label-size">200 x 200</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Finalización -->
+    <div class="modal-overlay" id="modal-final" style="display: none;">
+        <div class="modal-content">
+            <h2>¡Lección Completada!</h2>
+            <p id="feedback-text"></p>
+            <div class="code-block" style="background: #000; color: #fff;">
+                <pre id="final-code-display"></pre>
+            </div>
+            <button class="btn-primary btn-modal" onclick="window.location.href='../index.html'">Regresar al inicio</button>
+        </div>
+    </div>
+
+    <style>
+        /* Estilos específicos Lección 2 */
+        .canvas-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+        }
+
+        .box-layer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        /* Colores inspirados en DevTools y CMY */
+        .margin-layer { background-color: #00ffff; } /* Cyan */
+        .border-layer { background-color: #ffff00; } /* Yellow */
+        .padding-layer { background-color: #ff00ff; } /* Magenta */
+
+        #main-element {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        #label-size {
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+
+    <script src="../globales/scripts.js"></script>
+    <script>
+    // Configuración inicial de la lección
+    let config = {
+        padding: 0,
+        margin: 0,
+        border: 0
+    };
+
+    // Ajuste solicitado: Mínimo 0px, Máximo 20px
+    const LIMITS = { min: 0, max: 20 };
+    const COLORS = ['aqua', 'tomato', 'gold', 'violet', 'lime', 'coral', 'dodgerblue', 'orange'];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Color aleatorio inicial para el elemento principal[cite: 1]
+        const randomColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+        const mainEl = document.getElementById('main-element');
+        if(mainEl) mainEl.style.backgroundColor = randomColor;
+        
+        // 2. Evento para el botón finalizar en el aside[cite: 1]
+        const btnFinalizar = document.getElementById('btn-finalizar-leccion');
+        if(btnFinalizar) {
+            btnFinalizar.addEventListener('click', showSummary);
+        }
+    });
+
+    /**
+     * Función principal de actualización
+     * prop: 'padding', 'margin' o 'border'
+     * change: 1 para sumar, -1 para restar
+     */
+    function updateValue(prop, change) {
+        // Ajuste solicitado: incremento/decremento de 2px[cite: 1]
+        let newValue = config[prop] + (change * 2);
+        
+        // Validación de límites (0px - 20px)[cite: 1]
+        if (newValue >= LIMITS.min && newValue <= LIMITS.max) {
+            config[prop] = newValue;
+            renderStyles();
+        }
+    }
+
+    /**
+     * Aplica los cambios visuales y actualiza los bloques de código[cite: 1]
+     */
+    function renderStyles() {
+        // Actualizar capas visuales estilo DevTools[cite: 1]
+        const vMargin = document.getElementById('visual-margin');
+        const vBorder = document.getElementById('visual-border');
+        const vPadding = document.getElementById('visual-padding');
+
+        if(vMargin) vMargin.style.padding = `${config.margin}px`;
+        if(vBorder) vBorder.style.padding = `${config.border}px`;
+        if(vPadding) vPadding.style.padding = `${config.padding}px`;
+
+        // Actualizar valores numéricos en los acordeones del aside[cite: 1]
+        const codePad = document.getElementById('code-padding');
+        const codeMar = document.getElementById('code-margin');
+        const codeBor = document.getElementById('code-border');
+
+        if(codePad) codePad.innerText = `${config.padding}px`;
+        if(codeMar) codeMar.innerText = `${config.margin}px`;
+        if(codeBor) codeBor.innerText = `${config.border}px`;
+    }
+
+    /**
+     * Genera la retroalimentación y muestra el modal con el código final[cite: 1]
+     */
+    function showSummary() {
+        const color = document.getElementById('main-element').style.backgroundColor;
+        
+        // Texto descriptivo de los valores configurados[cite: 1]
+        const feedback = `Agregaste:\nMargin: ${config.margin}px\nPadding: ${config.padding}px\nBorder: ${config.border}px`;
+        
+        // Estructura de código CSS final[cite: 1]
+        const codeTemplate = `.div-inicial {
+    margin: ${config.margin}px;
+    padding: ${config.padding}px;
+    border: ${config.border}px solid yellow;
+    background-color: ${color};
+}`;
+
+        const feedbackText = document.getElementById('feedback-text');
+        const codeDisplay = document.getElementById('final-code-display');
+        const modal = document.getElementById('modal-final');
+
+        if(feedbackText) feedbackText.innerText = feedback;
+        if(codeDisplay) codeDisplay.innerText = codeTemplate;
+        if(modal) modal.style.display = 'flex';
+    }
+</script>
+</body>
+</html>
+```[cite: 1]

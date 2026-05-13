@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Base - Lección 1</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../globales/styles.css">
+</head>
+<body>
+
+    <aside id="sidebar" class="sidebar">
+        <!-- LOGO SUPERIOR -->
+        <a href="#" class="toggle-btn" id="btn-logo" aria-label="Alternar menú">
+            <img src="../globales/logo.png" alt="Logo" class="logo-img">
+        </a>
+
+        <!-- CONTENIDO DEL SIDEBAR (Se oculta al colapsar) -->
+        <div class="sidebar-content">
+            
+            <!-- ETAPA 1: INGRESO DE URL -->
+            <div id="seccion-entrada">
+                <h2 class="sidebar-title">Lección 1</h2>
+                <p class="sidebar-subtitle">Agrega tu video de YouTube Shorts</p>
+                
+            </div>
+
+            <!-- ETAPA 2: CONTROLES / ACORDEONES (Ocultos al inicio) -->
+            <div id="seccion-controles" style="display: none;">
+                <h2 class="sidebar-title">Personaliza el Video</h2>
+
+                <!-- Acordeón 1: Bordes -->
+                <details open class="control-group">
+                    <summary class="control-label">Bordes Redondeados</summary>
+                    <div class="btn-row">
+                        <button class="control-btn" onclick="setBorde('5px')">Chico</button>
+                        <button class="control-btn" onclick="setBorde('15px')">Medio</button>
+                        <button class="control-btn" onclick="setBorde('35px')">Grande</button>
+                    </div>
+                    <div class="live-code-box">
+                        <div class="code-block"><span class="css-prop">border-radius</span>: <span class="css-val" id="code-borde">0px</span>;</div>
+                    </div>
+                </details>
+
+                <!-- Acordeón 2: Tamaño -->
+                <details open class="control-group">
+                    <summary class="control-label">Tamaño del Video</summary>
+                    <div class="btn-row">
+                        <button class="control-btn" onclick="setScale(0.4)">Chico</button>
+                        <button class="control-btn" onclick="setScale(0.6)">Medio</button>
+                        <button class="control-btn" onclick="setScale(0.8)">Grande</button>
+                    </div>
+                    <div class="live-code-box">
+                        <div class="code-block"><span class="css-prop">transform</span>: scale(<span class="css-val" id="code-scale">1.0</span>);</div>
+                    </div>
+                </details>
+
+                <!-- Acordeón 3: Alineación -->
+                <details open class="control-group">
+                    <summary class="control-label">Alineación del Video</summary>
+                    <div class="grid-3x3">
+                        <button class="control-btn" onclick="setAlign('flex-start', 'flex-start')">↖</button>
+                        <button class="control-btn" onclick="setAlign('center', 'flex-start')">↑</button>
+                        <button class="control-btn" onclick="setAlign('flex-end', 'flex-start')">↗</button>
+                        <button class="control-btn" onclick="setAlign('flex-start', 'center')">←</button>
+                        <button class="control-btn" onclick="setAlign('center', 'center')">·</button>
+                        <button class="control-btn" onclick="setAlign('flex-end', 'center')">→</button>
+                        <button class="control-btn" onclick="setAlign('flex-start', 'flex-end')">↙</button>
+                        <button class="control-btn" onclick="setAlign('center', 'flex-end')">↓</button>
+                        <button class="control-btn" onclick="setAlign('flex-end', 'flex-end')">↘</button>
+                    </div>
+                    <div class="live-code-box">
+                        <div class="code-block"><span class="css-prop">justify-content</span>: <span class="css-val" id="code-align-x">center</span>;
+<span class="css-prop">align-items</span>: <span class="css-val" id="code-align-y">center</span>;</div>
+                    </div>
+                </details>
+
+                <!-- Botón de Finalizar -->
+                <button class="btn-primary" id="btn-finalizar" style="width: 100%; margin-top: 10px;">Finalizar Lección</button>
+            </div>
+        </div>
+
+        <!-- ÍCONO INFERIOR (Flecha de salida) -->
+        <a href="#" class="toggle-btn btn-bottom" id="btn-flecha" aria-label="Alternar menú">
+            <i class="fa-solid fa-right-to-bracket"></i>
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-box">
+
+
+            <div class="etapa-container" id="workspace-inicial">
+                <p class="sidebar-list">Agrega tu video de YouTube Shorts</p>
+
+                <div class="input-wrapper" style="margin-top: 20px; margin-bottom: 20px;">
+                    
+                    <input type="text" id="yt-url" placeholder="Pega el link aquí..."><button class="btn-primary" id="btn-validar" style="width: 22%;">Validar</button>
+                </div>
+                
+                
+            </div>
+
+
+            
+            <!-- Aquí cargará el video, con tu fondo gris claro para ver alineaciones -->
+            <div class="video-wrapper" id="video-container" style="display: none;">
+                <!-- El iframe va aquí -->
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL 1: ÉXITO (Paso intermedio) -->
+    <div class="modal-overlay" id="modal-success" style="display: none;">
+        <div class="modal-content">
+            <h2>¡Excelente!</h2>
+            <p>Has agregado tu video correctamente. Para incrustarlo en una página web real, se utiliza la etiqueta <code>&lt;iframe&gt;</code>.</p>
+            <div class="code-block" style="margin-bottom: 20px;">
+                <span class="tag">&lt;iframe</span> <span class="attr">src</span>=<span class="val">"URL_DEL_VIDEO"</span><span class="tag">&gt;&lt;/iframe&gt;</span>
+            </div>
+            <button class="btn-primary btn-modal" onclick="cerrarModal('modal-success')">Entendido</button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: RESUMEN FINAL -->
+    <div class="modal-overlay" id="modal-final" style="display: none;">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2>Resumen de la Lección</h2>
+            <p>¡Buen trabajo! Ajustaste las propiedades de tu video. Así se vería tu código CSS final:</p>
+            <div class="code-block" style="margin-bottom: 20px;" id="codigo-final-texto">
+                /* CSS Final se inyecta aquí con JS */
+            </div>
+            <button class="btn-primary btn-modal" onclick="location.reload()">Terminar y Reiniciar</button>
+        </div>
+    </div>
+
+    <script src="../globales/scripts.js"></script>
+</body>
+</html>
